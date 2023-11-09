@@ -1,0 +1,30 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    build: ./db
+    container_name: sample_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    volumes:
+      - ./db/init/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 5432:5432
+  
+  backend:
+    build: ./backend
+    container_name: sample_backend
+    ports: 
+      - 8080:8080
+    depends_on:
+      - db
+  
+  frontend:
+    build: ./frontend
+    container_name: sample_frontend
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
